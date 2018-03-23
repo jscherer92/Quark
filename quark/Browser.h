@@ -1,4 +1,7 @@
 #include <Windows.h>
+#include <exdisp.h>
+#include <MsHTML.h>
+#include "Embed.h"
 #include "ChakraManager.h"
 
 template <class T>
@@ -63,8 +66,18 @@ protected:
 class Browser : public BaseBrowser<Browser>
 {
 public:
+	Browser() {
+		oleInitializeSuccess = SUCCEEDED(OleInitialize(NULL));
+	}
+	~Browser() {
+		OleUninitialize();
+	}
 	LPCSTR ClassName() const { return "Quark"; }
 	LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
+	void EmbedBrowser();
 protected:
 	ChakraManager chakra;
+	Embed *embeddedBrowser;
+private:
+	BOOL oleInitializeSuccess;
 };

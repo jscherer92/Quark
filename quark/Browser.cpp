@@ -14,8 +14,37 @@ LRESULT Browser::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 			EndPaint(m_hwnd, &ps);
 		}
 		return 0;
+	case WM_SIZE: {
+		if (embeddedBrowser != 0)
+		{
+			RECT rcClient;
+			GetClientRect(m_hwnd, &rcClient);
+		
+			RECT rc;
+			rc.left = 0;
+			rc.top = 45;
+			rc.right = rcClient.right;
+			rc.bottom = rcClient.bottom;
+			embeddedBrowser->SetRect(rc);
+		}
+	}
 	default:
 		return DefWindowProc(m_hwnd, msg, wParam, lParam);
 	}
 	return TRUE;
+}
+
+void Browser::EmbedBrowser() {
+	RECT rcClient;
+	GetClientRect(m_hwnd, &rcClient);
+
+	embeddedBrowser = new Embed(m_hwnd);
+	if (embeddedBrowser != nullptr) {
+		RECT rc;
+		rc.left = 0;
+		rc.top = 45;
+		rc.right = rcClient.right;
+		rc.bottom = rcClient.bottom;
+		embeddedBrowser->SetRect(rc);
+	}
 }

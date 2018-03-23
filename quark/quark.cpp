@@ -7,8 +7,9 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE prevInst, LPSTR cmdLine, int cmdSho
 	if (!browser.Create("Quark Engine", WS_OVERLAPPEDWINDOW)) {
 		return 0;
 	}
-
 	ShowWindow(browser.Window(), cmdShow);
+	//Embedding a browser instance in our app and having control
+	browser.EmbedBrowser();
 
 	//Message Loop
 	MSG msg = {};
