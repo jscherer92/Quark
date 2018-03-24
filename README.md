@@ -49,3 +49,5 @@ we will need to discuss the overarching API that we will call since I do not hav
 Honestly, I really want this to become something and I am willing to put in the time, but do realize that I have a full time job, along with another project that
 I am working on (an OS written Rust because why not). I will be splitting my time between the two, but I will make sure this stays updated. At least working on it once or twice a week.
 
+# Current Footprint
+Quark, with ChakraCore and a full IE11 browser is sitting at 7MB of RAM usage with the debugger attached. It is also sitting at 198KB for an exe and 5 MB for the ChakraCore.dll of disk usage. I will do some more testing around it without Chakra or with V8. There will most likely be different configurations that will allow people to create very simple applications. More info on footprint coming in the near future!
