@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="ChakraManager.cpp" />
+    <ClCompile Include="os.cpp" />
     <ClCompile Include="quark.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="Browser.h" />
     <ClInclude Include="ChakraManager.h" />
+    <ClInclude Include="os.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
