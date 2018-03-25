@@ -1,6 +1,9 @@
-#include "os.h";
+#ifndef os_HEADER
+#define os_HEADER
 
-HRESULT STDMETHODCALLTYPE os::QueryInterface(REFIID id, void **v) {
+#include "os.h"
+
+HRESULT STDMETHODCALLTYPE OpSys::QueryInterface(REFIID id, void **v) {
 	*v = nullptr;
 	if (id == IID_IUnknown || id == IID_IDispatch)
 	{
@@ -16,11 +19,11 @@ HRESULT STDMETHODCALLTYPE os::QueryInterface(REFIID id, void **v) {
 	return E_NOINTERFACE;
 }
 
-ULONG STDMETHODCALLTYPE os::AddRef() {
+ULONG STDMETHODCALLTYPE OpSys::AddRef() {
 	return InterlockedIncrement(&ref);
 }
 
-ULONG STDMETHODCALLTYPE os::Release() {
+ULONG STDMETHODCALLTYPE OpSys::Release() {
 	int t = InterlockedIncrement(&ref);
 
 	if (t == 0)
@@ -31,22 +34,22 @@ ULONG STDMETHODCALLTYPE os::Release() {
 	return t;
 }
 
-HRESULT STDMETHODCALLTYPE os::GetTypeInfoCount(UINT *info) {
+HRESULT STDMETHODCALLTYPE OpSys::GetTypeInfoCount(UINT *info) {
 	*info = 0;
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE os::GetTypeInfo(UINT tInfo, LCID cid, ITypeInfo **pTInfo) {
+HRESULT STDMETHODCALLTYPE OpSys::GetTypeInfo(UINT tInfo, LCID cid, ITypeInfo **pTInfo) {
 	return E_FAIL;
 }
 
-HRESULT STDMETHODCALLTYPE os::GetIDsOfNames(REFIID id, LPOLESTR *names, UINT cNames, LCID cid, DISPID *dispId) {
+HRESULT STDMETHODCALLTYPE OpSys::GetIDsOfNames(REFIID id, LPOLESTR *names, UINT cNames, LCID cid, DISPID *dispId) {
 	HRESULT hr = S_OK;
 
 	for (UINT i = 0; i < cNames; i++) {
-		auto it = std::find(methods.begin(), methods.end(), names[i]);
-		if (it != methods.end()) {
-			dispId[i] = DISPID_VALUE + i;
+		auto it = std::distance(methods.begin(), std::find(methods.begin(), methods.end(), std::wstring(names[i])));
+		if (it != methods.size()) {
+			dispId[i] = DISPID_VALUE + it + 1;
 		}
 		else {
 			dispId[i] = DISPID_UNKNOWN;
@@ -57,7 +60,7 @@ HRESULT STDMETHODCALLTYPE os::GetIDsOfNames(REFIID id, LPOLESTR *names, UINT cNa
 	return hr;
 }
 
-HRESULT STDMETHODCALLTYPE os::Invoke(DISPID dispId, REFIID id, LCID cId, WORD flags, DISPPARAMS *dispParams, VARIANT *result, EXCEPINFO *excepInfo, UINT *argErr) {
+HRESULT STDMETHODCALLTYPE OpSys::Invoke(DISPID dispId, REFIID id, LCID cId, WORD flags, DISPPARAMS *dispParams, VARIANT *result, EXCEPINFO *excepInfo, UINT *argErr) {
 	if (flags & DISPATCH_METHOD)
 	{
 		HRESULT hr = S_OK;
@@ -73,9 +76,13 @@ HRESULT STDMETHODCALLTYPE os::Invoke(DISPID dispId, REFIID id, LCID cId, WORD fl
 		{
 		case DISP_ARCH: {
 			auto ret = SysAllocString(L"Called for ARCH");
-			result->vt = VT_BSTR;
-			result->bstrVal = ret;
+			if (result != nullptr)
+			{
+				result->vt = VT_BSTR;
+				result->bstrVal = ret;
+			}
 			break;
+		}
 		case DISP_CONST: {
 			auto ret = SysAllocString(L"Called for constants");
 			result->vt = VT_BSTR;
@@ -111,3 +118,4 @@ HRESULT STDMETHODCALLTYPE os::Invoke(DISPID dispId, REFIID id, LCID cId, WORD fl
 
 	return E_FAIL;
 }
+#endif

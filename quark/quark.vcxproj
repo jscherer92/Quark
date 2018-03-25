@@ -118,15 +118,18 @@
     <ClCompile Include="Embed.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="quark.cpp" />
+    <ClCompile Include="webEventHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="test.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h" />
     <ClInclude Include="ChakraManager.h" />
     <ClInclude Include="Embed.h" />
     <ClInclude Include="os.h" />
+    <ClInclude Include="webEventHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

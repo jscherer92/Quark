@@ -24,15 +24,21 @@
     <ClCompile Include="ChakraManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="os.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Embed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="os.cpp">
+    <ClCompile Include="webEventHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="test.html">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -41,10 +47,13 @@
     <ClInclude Include="ChakraManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="os.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Embed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="os.h">
+    <ClInclude Include="webEventHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
