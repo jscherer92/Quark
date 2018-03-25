@@ -1,7 +1,11 @@
 #include <Windows.h>
 #include <exdisp.h>
+#include <DispEx.h>
+#include <MsHTML.h>
 #include <string>
+#include <tchar.h>
 #include <comdef.h>
+#include "webEventHandler.h"
 
 class Embed : public IOleClientSite, public IOleInPlaceSite, public IStorage {
 public:
@@ -14,11 +18,20 @@ public:
 		if (CreateBrowser() == FALSE)
 			return;
 		ShowWindow(GetControlWindow(), SW_SHOW);
-		this->Navigate(L"https://github.com/jscherer92/Quark");
+		TCHAR *path = new TCHAR[MAX_PATH];
+		auto retVal = GetModuleFileName(NULL, path, MAX_PATH);
+		std::string filePath = std::string(TEXT(path));
+		std::size_t exeLoc = filePath.find("quark.exe");
+		std::string fPath = filePath.substr(0, exeLoc);
+		auto ffPath = std::string("file://") + fPath + std::string("test.html");
+		std::wstring nPath(ffPath.length(), L' ');
+		std::copy(ffPath.begin(), ffPath.end(), nPath.begin());
+		this->Navigate(nPath);
 	};
 
 	//Methods that we are going to use
 	BOOL CreateBrowser();
+	BOOL AttachBrowserListener();
 	RECT PixelToHiMetric(const RECT &rc);
 	void SetRect(const RECT &rc);
 
@@ -73,7 +86,9 @@ public:
 protected:
 	IOleObject* oleObject;
 	IOleInPlaceObject* oleInPlaceObject;
+	WebEventHandler* webHandler;
 	IWebBrowser2* webBrowser2;
+
 	LONG refCount;
 	RECT rObj;
 

@@ -28,6 +28,31 @@ BOOL Embed::CreateBrowser() {
 		return FALSE;
 	}
 
+	if (!AttachBrowserListener())
+	{
+		MessageBox(NULL, "Attaching browser handler failed!", "Error", MB_ICONERROR);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL Embed::AttachBrowserListener() {
+	webHandler = new WebEventHandler();
+	HRESULT hr;
+	IConnectionPointContainer *icpc;
+	IConnectionPoint *icp;
+	hr = this->webBrowser2->QueryInterface(IID_IConnectionPointContainer, (void**)&icpc);
+	if (hr != S_OK)
+		return FALSE;
+	hr = icpc->FindConnectionPoint(DIID_DWebBrowserEvents2, &icp);
+	if (hr != S_OK)
+		return FALSE;
+	hr = icp->Advise(webHandler, webHandler->getCookie());
+	if (hr != S_OK)
+		return FALSE;
+
+	webHandler->setBrowser(this->webBrowser2);
 	return TRUE;
 }
 
