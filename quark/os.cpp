@@ -2,6 +2,8 @@
 #define os_HEADER
 
 #include "os.h"
+#include <iostream>
+#include <string>
 
 HRESULT STDMETHODCALLTYPE OpSys::QueryInterface(REFIID id, void **v) {
 	*v = nullptr;
@@ -61,8 +63,10 @@ HRESULT STDMETHODCALLTYPE OpSys::GetIDsOfNames(REFIID id, LPOLESTR *names, UINT 
 }
 
 HRESULT STDMETHODCALLTYPE OpSys::Invoke(DISPID dispId, REFIID id, LCID cId, WORD flags, DISPPARAMS *dispParams, VARIANT *result, EXCEPINFO *excepInfo, UINT *argErr) {
-	if (flags & DISPATCH_METHOD)
+
+	if (flags & (DISPATCH_METHOD | DISPATCH_CONSTRUCT))
 	{
+
 		HRESULT hr = S_OK;
 
 		/* We will implement this loop later, atm the methods we are creating do not use args at all
@@ -106,7 +110,33 @@ HRESULT STDMETHODCALLTYPE OpSys::Invoke(DISPID dispId, REFIID id, LCID cId, WORD
 			result->vt = VT_BSTR;
 			result->bstrVal = ret;
 			break;
+		}	  
+		case DISP_OBJTEST: {
+			Test* t = new Test();
+			result->vt = VT_DISPATCH;
+			result->pdispVal = t;
+			break;
 		}
+		case DISP_ON: {
+			HRESULT res = S_OK;
+			LONG numArgs = dispParams->cArgs;
+			BSTR name = nullptr;
+			LPOLESTR member = (LPOLESTR)std::wstring(L"valuechange").c_str();
+			//by getting the VT_BSTR we can switch on this and figure out the event that was fired from this!
+			if (dispParams->rgvarg[1].vt == VT_BSTR) {
+				name = dispParams->rgvarg[1].bstrVal;
+			}
+			if (dispParams->rgvarg[0].vt == VT_DISPATCH) {
+				DISPPARAMS params = { NULL, NULL, 0, 0 };
+				VARIANT vResult;
+				//if it is not a named arg, then the name is going to be DISPID_VALUE or 0x00
+				dispParams->rgvarg[0].pdispVal->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &vResult, NULL, NULL);
+			}
+			if(name != nullptr)
+				SysFreeString(name);
+			break;
+		}
+		
 		default: {
 			hr = DISP_E_MEMBERNOTFOUND;
 		}

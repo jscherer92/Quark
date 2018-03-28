@@ -6,11 +6,9 @@ LRESULT Browser::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 		PostQuitMessage(0);
 		return 0;
 	case WM_PAINT: {
-			std::string test = chakra.RunTestScript();
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(m_hwnd, &ps);
 			FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-			TextOut(hdc, 5, 5, test.c_str(), test.size());
 			EndPaint(m_hwnd, &ps);
 		}
 		return 0;
