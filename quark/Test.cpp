@@ -94,8 +94,8 @@ HRESULT STDMETHODCALLTYPE Test::Invoke(DISPID dispId, REFIID id, LCID cId, WORD 
 			}
 			if (0 == wcscmp(name, L"addNewVal")) {
 				if (dispParams->rgvarg[0].vt == VT_DISPATCH) {
-					std::unique_ptr<DISPPARAMS> params(new DISPPARAMS);
-					std::unique_ptr<VARIANT[]> args(new VARIANT[1]);
+					std::unique_ptr<DISPPARAMS> params = std::make_unique<DISPPARAMS>();
+					std::unique_ptr<VARIANT[]> args = std::make_unique<VARIANT[]>(1);
 					args[0].vt = VT_BSTR;
 					args[0].bstrVal = SysAllocString(L"This came from C=+ and passed as a param to the callback!");
 					params->rgvarg = args.release();

@@ -13,13 +13,15 @@ BOOL WebEventHandler::AttachScriptHandler() {
 	hr = docDispatch->QueryInterface(&doc);
 	if (hr != S_OK)
 		return FALSE;
+	docDispatch->Release();
 	hr = doc->get_parentWindow(&win);
 	if (hr != S_OK)
 		return FALSE;
+	doc->Release();
 	hr = win->QueryInterface(&wndEx);
-	win->Release();
 	if (hr != S_OK)
 		return FALSE;
+	win->Release();
 	BSTR objName = SysAllocString(L"os");
 	wndEx->GetDispID(objName, fdexNameEnsure, &dispid);
 	SysFreeString(objName);

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <exdisp.h>
 #include <MsHTML.h>
+#include <memory>
 #include "Embed.h"
 
 template <class T>
@@ -75,7 +76,7 @@ public:
 	LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
 	void EmbedBrowser();
 protected:
-	Embed *embeddedBrowser;
+	std::unique_ptr<Embed> embeddedBrowser;
 private:
 	BOOL oleInitializeSuccess;
 };
