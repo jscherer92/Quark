@@ -112,9 +112,12 @@ HRESULT STDMETHODCALLTYPE OpSys::Invoke(DISPID dispId, REFIID id, LCID cId, WORD
 			break;
 		}	  
 		case DISP_OBJTEST: {
-			Test* t = new Test();
+			//old test object
+			//Test* t = new Test();
+			//new test object with class interface
+			std::unique_ptr<TestObject> t = std::make_unique<TestObject>();
 			result->vt = VT_DISPATCH;
-			result->pdispVal = t;
+			result->pdispVal = t.release();
 			break;
 		}
 		case DISP_ON: {

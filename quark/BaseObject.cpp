@@ -70,8 +70,8 @@ HRESULT STDMETHODCALLTYPE BaseObject::Invoke(DISPID dispId, REFIID id, LCID cId,
 	{
 	case DISPATCH_METHOD:
 	{
-		hr = callFunction(dispId, 
-			std::move(std::unique_ptr<DISPPARAMS>(dispParams)), 
+		hr = callFunction(dispId,
+			std::move(std::unique_ptr<DISPPARAMS>(dispParams)),
 			std::move(std::unique_ptr<VARIANT>(result)), 
 			std::move(std::unique_ptr<EXCEPINFO>(excepInfo)), 
 			std::move(std::unique_ptr<UINT>(argErr)));
@@ -81,6 +81,7 @@ HRESULT STDMETHODCALLTYPE BaseObject::Invoke(DISPID dispId, REFIID id, LCID cId,
 	{
 		hr = getMember(dispId,
 			std::move(std::unique_ptr<DISPPARAMS>(dispParams)),
+			std::move(std::unique_ptr<VARIANT>(result)),
 			std::move(std::unique_ptr<EXCEPINFO>(excepInfo)),
 			std::move(std::unique_ptr<UINT>(argErr)));
 		break;
@@ -89,7 +90,6 @@ HRESULT STDMETHODCALLTYPE BaseObject::Invoke(DISPID dispId, REFIID id, LCID cId,
 	{
 		hr = setMember(dispId,
 			std::move(std::unique_ptr<DISPPARAMS>(dispParams)),
-			std::move(std::unique_ptr<VARIANT>(result)),
 			std::move(std::unique_ptr<EXCEPINFO>(excepInfo)),
 			std::move(std::unique_ptr<UINT>(argErr)));
 		break;
@@ -108,6 +108,7 @@ HRESULT STDMETHODCALLTYPE BaseObject::Invoke(DISPID dispId, REFIID id, LCID cId,
 		break;
 	}
 
+	
 	return hr;
 }
 #endif

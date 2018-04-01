@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
-#include "Test.h"
+#include "TestObject.h"
 
 class OpSys : public IDispatch {
 private:
