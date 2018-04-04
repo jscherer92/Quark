@@ -13,6 +13,8 @@ HRESULT Buffer::getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::un
 		}
 		case buffer:
 		{
+			result->vt = VT_DISPATCH;
+			result->pdispVal = internArr.get();
 			break;
 		}
 		case length:
@@ -40,6 +42,7 @@ HRESULT Buffer::createObject(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 {
 	return E_NOINTERFACE;
 };
+//right now, implement inline where possible. Optimizations can be made afterward
 HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg)
 {
 	HRESULT hr = S_OK;
@@ -50,18 +53,112 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		{
 		case alloc:
 		{
+			auto numArgs = params->cArgs;
+			if (!numArgs) 
+			{
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>()).release();
+			}
+			else if (numArgs == 1) { //length argument, no error checking. Need to add that later!!!
+				auto len = params->rgvarg[0].intVal;
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>(true, len)).release();
+			}
+			else if (numArgs == 2) //length and fill
+			{ 
+				auto len = params->rgvarg[0].intVal;
+				auto data = params->rgvarg[1].bstrVal;
+				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (len)
+				{
+					auto fData = std::make_unique<byte>(len);
+					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
+					result->vt = VT_DISPATCH;
+					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
+					SysFreeString(data);
+				}
+			}
+			else if (numArgs == 3) //length, fill, and encoding no impl
+			{
+				return E_NOTIMPL;
+			}
 			break;
 		}
 		case allocUnsafe:
 		{
+			auto numArgs = params->cArgs;
+			if (!numArgs)
+			{
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>()).release();
+			}
+			else if (numArgs == 1) //length
+			{
+				auto len = params->rgvarg[0].intVal;
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>(false, len)).release();
+			}
+			else if (numArgs == 2) //length and fill
+			{
+				auto len = params->rgvarg[0].intVal;
+				auto data = params->rgvarg[1].bstrVal;
+				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (len)
+				{
+					auto fData = std::make_unique<byte>(len);
+					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
+					result->vt = VT_DISPATCH;
+					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
+					SysFreeString(data);
+				}
+			}
 			break;
 		}
-		case allocUnsafeSlow:
+		case allocUnsafeSlow: //our impl will run like the regular allocation atm. We may pool once the application is running, but all instances are separated atm.
 		{
+			auto numArgs = params->cArgs;
+			if (!numArgs)
+			{
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>()).release();
+			}
+			else if (numArgs == 1) //length
+			{
+				auto len = params->rgvarg[0].intVal;
+				result->vt = VT_DISPATCH;
+				result->pdispVal = (std::make_unique<Buffer>(false, len)).release();
+			}
+			else if (numArgs == 2) //length and fill
+			{
+				auto len = params->rgvarg[0].intVal;
+				auto data = params->rgvarg[1].bstrVal;
+				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (len)
+				{
+					auto fData = std::make_unique<byte>(len);
+					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
+					result->vt = VT_DISPATCH;
+					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
+					SysFreeString(data);
+				}
+			}
 			break;
 		}
-		case byteLength:
+		case byteLength: //right now only support the string type. Will support others as it comes in time
 		{
+			auto numArgs = params->cArgs;
+			if (numArgs == 1)
+			{
+				auto data = params->rgvarg[0].bstrVal;
+				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				result->vt = VT_INT;
+				result->intVal = len;
+				SysFreeString(data);
+			}
+			else
+			{
+				return E_NOTIMPL;
+			}
 			break;
 		}
 		case compare:

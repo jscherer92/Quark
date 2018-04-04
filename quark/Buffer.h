@@ -9,7 +9,7 @@ private:
 	virtual HRESULT callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
 
 	//internal representation of the buffer
-	std::unique_ptr<byte[]> internBuffer;
+	std::unique_ptr<TypedArray> internArr;
 	enum getMethods { poolSize = 1, buffer = 2, length = 3, INSPECT_MAX_BYTES = 4, kMaxLength = 5 };
 	enum callMethods {
 		alloc = 1,
@@ -77,7 +77,7 @@ private:
 
 	};
 public:
-	Buffer() : BaseObject({
+	Buffer(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject({
 		{ SET,{} },
 		{ GET,{ L"poolSize", L"buffer", L"length", L"INSPECT_MAX_BYTES", L"kMaxLength" } },
 		{ CREATE,{} },
@@ -145,5 +145,25 @@ public:
 			L"writeUIntLE",
 			L"transcode"
 		} }
-	}) {}
+	}) {
+		internArr = std::make_unique<TypedArray>(numBytes, fill, safe);
+	}
+};
+
+class TypedArray : public BaseObject {
+private:
+	std::unique_ptr<byte> internalBuffer;
+public:
+	TypedArray(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject({
+		{GET, {}},
+		{SET, {}},
+		{CREATE, {}},
+		{CALL, {}}
+	}) {
+		internalBuffer = std::make_unique<byte>(numBytes);
+		if (safe) 
+		{
+			std::fill(internalBuffer.get(), internalBuffer.get() + numBytes, fill);
+		}
+	};
 };
