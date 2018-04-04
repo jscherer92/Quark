@@ -19,6 +19,8 @@ HRESULT Buffer::getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::un
 		}
 		case length:
 		{
+			result->vt = VT_INT;
+			result->intVal = sizeof(internArr->getBase());
 			break;
 		}
 		case INSPECT_MAX_BYTES:
@@ -68,10 +70,10 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			{ 
 				auto len = params->rgvarg[0].intVal;
 				auto data = params->rgvarg[1].bstrVal;
-				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
-				if (len)
+				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(len);
+					auto fData = std::make_unique<byte>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -102,10 +104,10 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			{
 				auto len = params->rgvarg[0].intVal;
 				auto data = params->rgvarg[1].bstrVal;
-				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
-				if (len)
+				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(len);
+					auto fData = std::make_unique<byte>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -132,10 +134,10 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			{
 				auto len = params->rgvarg[0].intVal;
 				auto data = params->rgvarg[1].bstrVal;
-				int len = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
-				if (len)
+				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
+				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(len);
+					auto fData = std::make_unique<byte>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -157,16 +159,90 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			}
 			else
 			{
-				return E_NOTIMPL;
+				return E_FAIL;
 			}
 			break;
 		}
 		case compare:
 		{
+			auto numArgs = params->cArgs;
+			if (numArgs == 2) //again, assuming all values are correct atm
+			{
+				auto b1 = std::make_unique<Buffer>(params->rgvarg[0].pdispVal);
+				auto b2 = std::make_unique<Buffer>(params->rgvarg[1].pdispVal);
+				int ret = memcmp(b1->internArr->getBase(), b2->internArr->getBase(), sizeof(b1->internArr->getBase()));
+				if (ret < 0)
+				{
+					result->vt = VT_INT;
+					result->intVal = -1;
+				}
+				else if (ret > 0)
+				{
+					result->vt = VT_INT;
+					result->intVal = 1;
+				}
+				else
+				{
+					result->vt = VT_INT;
+					result->intVal = 0;
+				}
+			}
+			else 
+			{
+				return E_FAIL;
+			}
 			break;
 		}
 		case concat:
 		{
+			auto numArgs = params->cArgs;
+			if (numArgs == 1)
+			{
+				auto args = params->rgvarg[0].parray;
+				Buffer* buffers;
+				SafeArrayAccessData(args, (void**)&buffers);
+				long lb, ub;
+				SafeArrayGetLBound(args, 1, &lb);
+				SafeArrayGetUBound(args, 1, &ub);
+				long numElements = ub - lb + 1;
+				long byteCount = 0;
+				for (int i = 0; i < numElements; i++) {
+					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
+					byteCount += sizeof(buf->internArr->getBase());
+				}
+				byte* nBuf = new byte(byteCount);
+				byteCount = 0;
+				for (int i = 0; i < numElements; i++) {
+					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
+					memcpy(nBuf, buf->internArr->getBase(), sizeof(buf->internArr->getBase()));
+					nBuf += sizeof(buf->internArr->getBase());
+				}
+				std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(nBuf);
+				result->vt = VT_DISPATCH;
+				result->pdispVal = buf.release();
+				SafeArrayUnaccessData(args);
+			}
+			else if (numArgs == 2)
+			{
+				auto args = params->rgvarg[0].parray;
+				Buffer* buffers;
+				SafeArrayAccessData(args, (void**)&buffers);
+				long lb, ub;
+				SafeArrayGetLBound(args, 1, &lb);
+				SafeArrayGetUBound(args, 1, &ub);
+				long numElements = ub - lb + 1;
+				long byteCount = params->rgvarg[1].intVal;
+				byte* nBuf = new byte(byteCount);
+				for (int i = 0; i < numElements; i++) {
+					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
+					memcpy(nBuf, buf->internArr->getBase(), sizeof(buf->internArr->getBase()));
+					nBuf += sizeof(buf->internArr->getBase());
+				}
+				std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(nBuf);
+				result->vt = VT_DISPATCH;
+				result->pdispVal = buf.release();
+				SafeArrayUnaccessData(args);
+			}
 			break;
 		}
 		case from:
@@ -191,6 +267,26 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case equals:
 		{
+			auto numArgs = params->cArgs;
+			if (numArgs == 1) 
+			{
+				auto b1 = std::make_unique<Buffer>(params->rgvarg[0].pdispVal);
+				int ret = memcmp(b1->internArr->getBase(), internArr->getBase(), sizeof(b1->internArr->getBase()));
+				if (ret == 0)
+				{
+					result->vt = VT_BOOL;
+					result->boolVal = true;
+				}
+				else
+				{
+					result->vt = VT_BOOL;
+					result->boolVal = false;
+				}
+			}
+			else
+			{
+				return E_FAIL;
+			}
 			break;
 		}
 		case fill:

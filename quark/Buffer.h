@@ -1,5 +1,33 @@
 #include "BaseObject.h"
 
+class TypedArray : public BaseObject {
+private:
+	std::unique_ptr<byte> internalBuffer;
+	std::map<memberType, std::vector<std::wstring>> memberMap = {
+		{ GET,{} },
+		{ SET,{} },
+		{ CREATE,{} },
+		{ CALL,{} }
+	};
+public:
+	TypedArray(bool safe = true, long numBytes = 0, byte fill = 0x00) : BaseObject(memberMap) {
+		internalBuffer = std::make_unique<byte>(numBytes);
+		if (safe)
+		{
+			std::fill(internalBuffer.get(), internalBuffer.get() + numBytes, fill);
+		}
+	};
+	TypedArray(byte* buffer) : BaseObject(memberMap) {
+		internalBuffer = std::make_unique<byte>(buffer);
+	}
+
+	byte* getBase() {
+		return internalBuffer.get();
+	}
+
+
+};
+
 class Buffer : public BaseObject {
 private:
 	virtual HRESULT getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
@@ -74,10 +102,8 @@ private:
 		writeUIntBE = 60,
 		writeUIntLE = 61,
 		transcode = 62
-
 	};
-public:
-	Buffer(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject({
+	std::map<memberType, std::vector<std::wstring>> methodMap = {
 		{ SET,{} },
 		{ GET,{ L"poolSize", L"buffer", L"length", L"INSPECT_MAX_BYTES", L"kMaxLength" } },
 		{ CREATE,{} },
@@ -145,25 +171,12 @@ public:
 			L"writeUIntLE",
 			L"transcode"
 		} }
-	}) {
+	};
+public:
+	Buffer(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject(methodMap) {
 		internArr = std::make_unique<TypedArray>(numBytes, fill, safe);
 	}
-};
-
-class TypedArray : public BaseObject {
-private:
-	std::unique_ptr<byte> internalBuffer;
-public:
-	TypedArray(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject({
-		{GET, {}},
-		{SET, {}},
-		{CREATE, {}},
-		{CALL, {}}
-	}) {
-		internalBuffer = std::make_unique<byte>(numBytes);
-		if (safe) 
-		{
-			std::fill(internalBuffer.get(), internalBuffer.get() + numBytes, fill);
-		}
-	};
+	Buffer(byte* buffer) : BaseObject(methodMap) {
+		internArr = std::make_unique<TypedArray>(buffer);
+	}
 };
