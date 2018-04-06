@@ -73,7 +73,7 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
 				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(bstrLen);
+					auto fData = std::make_unique<byte[]>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -107,7 +107,7 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
 				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(bstrLen);
+					auto fData = std::make_unique<byte[]>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -137,7 +137,7 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 				int bstrLen = WideCharToMultiByte(CP_UTF8, 0, data, -1, NULL, 0, NULL, NULL);
 				if (bstrLen)
 				{
-					auto fData = std::make_unique<byte>(bstrLen);
+					auto fData = std::make_unique<byte[]>(bstrLen);
 					WideCharToMultiByte(CP_UTF8, 0, data, -1, (LPSTR)fData.get(), len, NULL, NULL);
 					result->vt = VT_DISPATCH;
 					result->pdispVal = (std::make_unique<Buffer>(true, len, fData.release())).release();
@@ -168,9 +168,9 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			auto numArgs = params->cArgs;
 			if (numArgs == 2) //again, assuming all values are correct atm
 			{
-				auto b1 = std::make_unique<Buffer>(params->rgvarg[0].pdispVal);
-				auto b2 = std::make_unique<Buffer>(params->rgvarg[1].pdispVal);
-				int ret = memcmp(b1->internArr->getBase(), b2->internArr->getBase(), sizeof(b1->internArr->getBase()));
+				auto b1 = (Buffer)params->rgvarg[0].pdispVal;
+				auto b2 = (Buffer)params->rgvarg[1].pdispVal;
+				int ret = memcmp(b1.internArr->getBase(), b2.internArr->getBase(), sizeof(b1.internArr->getBase()));
 				if (ret < 0)
 				{
 					result->vt = VT_INT;
@@ -207,15 +207,13 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 				long numElements = ub - lb + 1;
 				long byteCount = 0;
 				for (int i = 0; i < numElements; i++) {
-					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
-					byteCount += sizeof(buf->internArr->getBase());
+					byteCount += sizeof(buffers[i].internArr->getBase());
 				}
-				byte* nBuf = new byte(byteCount);
+				byte* nBuf = new byte[byteCount];
 				byteCount = 0;
 				for (int i = 0; i < numElements; i++) {
-					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
-					memcpy(nBuf, buf->internArr->getBase(), sizeof(buf->internArr->getBase()));
-					nBuf += sizeof(buf->internArr->getBase());
+					memcpy(nBuf, buffers[i].internArr->getBase(), sizeof(buffers[i].internArr->getBase()));
+					nBuf += sizeof(buffers[i].internArr->getBase());
 				}
 				std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(nBuf);
 				result->vt = VT_DISPATCH;
@@ -232,11 +230,10 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 				SafeArrayGetUBound(args, 1, &ub);
 				long numElements = ub - lb + 1;
 				long byteCount = params->rgvarg[1].intVal;
-				byte* nBuf = new byte(byteCount);
+				byte* nBuf = new byte[byteCount];
 				for (int i = 0; i < numElements; i++) {
-					std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(buffers[i]);
-					memcpy(nBuf, buf->internArr->getBase(), sizeof(buf->internArr->getBase()));
-					nBuf += sizeof(buf->internArr->getBase());
+					memcpy(nBuf, buffers[i].internArr->getBase(), sizeof(buffers[i].internArr->getBase()));
+					nBuf += sizeof(buffers[i].internArr->getBase());
 				}
 				std::unique_ptr<Buffer> buf = std::make_unique<Buffer>(nBuf);
 				result->vt = VT_DISPATCH;
@@ -270,8 +267,8 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 			auto numArgs = params->cArgs;
 			if (numArgs == 1) 
 			{
-				auto b1 = std::make_unique<Buffer>(params->rgvarg[0].pdispVal);
-				int ret = memcmp(b1->internArr->getBase(), internArr->getBase(), sizeof(b1->internArr->getBase()));
+				auto b = (Buffer)params->rgvarg[0].pdispVal;
+				int ret = memcmp(b.internArr->getBase(), b.internArr->getBase(), sizeof(b.internArr->getBase()));
 				if (ret == 0)
 				{
 					result->vt = VT_BOOL;

@@ -2,7 +2,12 @@
 
 class TypedArray : public BaseObject {
 private:
-	std::unique_ptr<byte> internalBuffer;
+	std::unique_ptr<byte[]> internalBuffer;
+	HRESULT getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) { return E_NOTIMPL; };
+	HRESULT setMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) { return E_NOTIMPL; };
+	//virtual HRESULT setReferenceMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) = 0;
+	HRESULT createObject(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) { return E_NOTIMPL; };
+	HRESULT callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) { return E_NOTIMPL; };
 	std::map<memberType, std::vector<std::wstring>> memberMap = {
 		{ GET,{} },
 		{ SET,{} },
@@ -10,15 +15,17 @@ private:
 		{ CALL,{} }
 	};
 public:
-	TypedArray(bool safe = true, long numBytes = 0, byte fill = 0x00) : BaseObject(memberMap) {
-		internalBuffer = std::make_unique<byte>(numBytes);
+	TypedArray(bool safe = true, long numBytes = 0, byte fill[] = { 0x00 }) : BaseObject(memberMap) {
+		internalBuffer = std::make_unique<byte[]>(numBytes);
 		if (safe)
 		{
-			std::fill(internalBuffer.get(), internalBuffer.get() + numBytes, fill);
+			//just going to fill with 0. will use fill buffer later
+			std::fill_n(internalBuffer.get(), numBytes, 0x00);
 		}
 	};
-	TypedArray(byte* buffer) : BaseObject(memberMap) {
-		internalBuffer = std::make_unique<byte>(buffer);
+	TypedArray(byte buffer[]) : BaseObject(memberMap) {
+		internalBuffer = std::make_unique<byte[]>(sizeof(buffer));
+		memcpy(internalBuffer.get(), buffer, sizeof(buffer));
 	}
 
 	byte* getBase() {
@@ -173,10 +180,10 @@ private:
 		} }
 	};
 public:
-	Buffer(bool safe = true, long numBytes=0, byte fill=0x00) : BaseObject(methodMap) {
-		internArr = std::make_unique<TypedArray>(numBytes, fill, safe);
+	Buffer(bool safe = true, long numBytes = 0, byte fill[] = { 0x00 }) : BaseObject(methodMap) {
+		internArr = std::make_unique<TypedArray>(safe, numBytes, fill);
 	}
-	Buffer(byte* buffer) : BaseObject(methodMap) {
+	Buffer(byte buffer[]) : BaseObject(methodMap) {
 		internArr = std::make_unique<TypedArray>(buffer);
 	}
 };
