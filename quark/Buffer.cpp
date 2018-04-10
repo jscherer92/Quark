@@ -670,6 +670,45 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeDoubleBE:
 		{
+			if (params->cArgs == 2)
+			{
+				double val = params->rgvarg[0].dblVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, DOUBLE))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				double val = params->rgvarg[0].dblVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, DOUBLE))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeDoubleLE:
@@ -678,6 +717,45 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeFloatBE:
 		{
+			if (params->cArgs == 2)
+			{
+				float val = params->rgvarg[0].fltVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, FLOAT))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				float val = params->rgvarg[0].fltVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, FLOAT))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeFloatLE:
@@ -686,10 +764,88 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeInt8:
 		{
+			if (params->cArgs == 2)
+			{
+				byte val = params->rgvarg[0].cVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT8))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				byte val = params->rgvarg[0].cVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT8))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeInt16BE:
 		{
+			if (params->cArgs == 2)
+			{
+				short val = params->rgvarg[0].iVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT16))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				short val = params->rgvarg[0].iVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT16))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeInt16LE:
@@ -698,6 +854,45 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeInt32BE:
 		{
+			if (params->cArgs == 2)
+			{
+				long val = params->rgvarg[0].lVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT32))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				long val = params->rgvarg[0].lVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT32))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeInt32LE:
@@ -706,6 +901,47 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeIntBE:
 		{
+			if (params->cArgs == 3)
+			{
+				long val = params->rgvarg[0].lVal;
+				int offset = params->rgvarg[1].intVal;
+				int bl = params->rgvarg[2].intVal;
+				if (this->safeAccess(offset, CUSTOM, bl))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				long val = params->rgvarg[0].lVal;
+				int offset = params->rgvarg[1].intVal;
+				int bl = params->rgvarg[2].intVal;
+				bool check = params->rgvarg[3].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, CUSTOM, bl))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+			}
 			break;
 		}
 		case writeIntLE:
@@ -714,10 +950,88 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeUInt8:
 		{
+			if (params->cArgs == 2)
+			{
+				unsigned char val = params->rgvarg[0].bVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT8))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				unsigned char val = params->rgvarg[0].bVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT8))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeUInt16BE:
 		{
+			if (params->cArgs == 2)
+			{
+				unsigned short val = params->rgvarg[0].uiVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT16))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				unsigned short val = params->rgvarg[0].uiVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT16))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeUInt16LE:
@@ -726,6 +1040,45 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeUInt32BE:
 		{
+			if (params->cArgs == 2)
+			{
+				unsigned long val = params->rgvarg[0].ulVal;
+				int offset = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, INT32))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				unsigned long val = params->rgvarg[0].uiVal;
+				int offset = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT32))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = sizeof(val);
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = sizeof(val);
+				}
+			}
 			break;
 		}
 		case writeUInt32LE:
@@ -734,6 +1087,47 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case writeUIntBE:
 		{
+			if (params->cArgs == 3)
+			{
+				unsigned long val = params->rgvarg[0].ulVal;
+				int offset = params->rgvarg[1].intVal;
+				int bl = params->rgvarg[2].intVal;
+				if (this->safeAccess(offset, CUSTOM, bl))
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				unsigned long val = params->rgvarg[0].ulVal;
+				int offset = params->rgvarg[1].intVal;
+				int bl = params->rgvarg[2].intVal;
+				bool check = params->rgvarg[3].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, CUSTOM, bl))
+					{
+						this->internArr->getBase()[offset] = val;
+						result->vt = VT_I4;
+						result->lVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					this->internArr->getBase()[offset] = val;
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+			}
 			break;
 		}
 		case writeUIntLE:
