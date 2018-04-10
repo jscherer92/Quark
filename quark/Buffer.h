@@ -46,6 +46,14 @@ private:
 	//internal representation of the buffer
 	std::unique_ptr<TypedArray> internArr;
 	enum getMethods { poolSize = 1, buffer = 2, length = 3, INSPECT_MAX_BYTES = 4, kMaxLength = 5 };
+	enum type {
+		DOUBLE = 24,
+		FLOAT = 20,
+		INT8 = 1,
+		INT16 = 2,
+		INT32 = 4,
+		CUSTOM = 0
+	};
 	enum callMethods {
 		alloc = 1,
 		allocUnsafe = 2,
@@ -179,6 +187,8 @@ private:
 			L"transcode"
 		} }
 	};
+protected:
+	bool safeAccess(int offset, type type = INT32, int num = -1);
 public:
 	Buffer(bool safe = true, long numBytes = 0, byte fill[] = { 0x00 }) : BaseObject(methodMap) {
 		internArr = std::make_unique<TypedArray>(safe, numBytes, fill);

@@ -1,5 +1,23 @@
 #include "Buffer.h";
 
+bool Buffer::safeAccess(int offset, type type = INT32, int num = -1) {
+	int len = 0;
+	if (type == CUSTOM)
+	{
+		len = num;
+	}
+	else if (type & 16 == 1)
+	{
+		len = type % 16;
+	}
+	else
+	{
+		len = type;
+	}
+
+	return (((offset + 1) * len) > sizeof(this->internArr->getBase()));
+}
+
 HRESULT Buffer::getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) 
 {
 	HRESULT hr = S_OK;
@@ -308,6 +326,44 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case readDoubleBE:
 		{
+			//do check to see if we are outside of our location
+			if (params->cArgs == 1)
+			{
+				int offset = params->rgvarg[0].intVal;
+				if (this->safeAccess(offset, DOUBLE))
+				{
+					double val = this->internArr->getBase()[offset];
+					result->vt = VT_R8;
+					result->dblVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				bool check = params->rgvarg[1].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, DOUBLE))
+					{
+						double val = this->internArr->getBase()[offset];
+						result->vt = VT_R8;
+						result->dblVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				} 
+				else
+				{
+					double val = this->internArr->getBase()[offset];
+					result->vt = VT_R8;
+					result->dblVal = val;
+				}
+			}
 			break;
 		}
 		case readDoubleLE:
@@ -316,6 +372,44 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case readFloatBE:
 		{
+			//do check to see if we are outside of our location
+			if (params->cArgs == 1)
+			{
+				int offset = params->rgvarg[0].intVal;
+				if (this->safeAccess(offset, FLOAT))
+				{
+					float val = this->internArr->getBase()[offset];
+					result->vt = VT_R4;
+					result->fltVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				bool check = params->rgvarg[1].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, FLOAT))
+					{
+						float val = this->internArr->getBase()[offset];
+						result->vt = VT_R4;
+						result->fltVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					float val = this->internArr->getBase()[offset];
+					result->vt = VT_R4;
+					result->fltVal = val;
+				}
+			}
 			break;
 		}
 		case readFloatLE:
@@ -324,10 +418,84 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case readInt8:
 		{
+			if (params->cArgs == 1)
+			{
+				int offset = params->rgvarg[0].intVal;
+				if (this->safeAccess(offset, INT8))
+				{
+					byte val = this->internArr->getBase()[offset];
+					result->vt = VT_I1;
+					result->bVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				bool check = params->rgvarg[1].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT8))
+					{
+						byte val = this->internArr->getBase()[offset];
+						result->vt = VT_I1;
+						result->bVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					byte val = this->internArr->getBase()[offset];
+					result->vt = VT_I1;
+					result->bVal = val;
+				}
+			}
 			break;
 		}
 		case readInt16BE:
 		{
+			if (params->cArgs == 1)
+			{
+				int offset = params->rgvarg[0].intVal;
+				if (this->safeAccess(offset, INT16))
+				{
+					short val = this->internArr->getBase()[offset];
+					result->vt = VT_I2;
+					result->iVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				bool check = params->rgvarg[1].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT16))
+					{
+						short val = this->internArr->getBase()[offset];
+						result->vt = VT_I2;
+						result->iVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					short val = this->internArr->getBase()[offset];
+					result->vt = VT_I2;
+					result->iVal = val;
+				}
+			}
 			break;
 		}
 		case readInt16LE:
@@ -336,6 +504,43 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case readInt32BE:
 		{
+			if (params->cArgs == 1)
+			{
+				int offset = params->rgvarg[0].intVal;
+				if (this->safeAccess(offset, INT32))
+				{
+					long val = this->internArr->getBase()[offset];
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				bool check = params->rgvarg[1].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, INT32))
+					{
+						long val = this->internArr->getBase()[offset];
+						result->vt = VT_I4;
+						result->lVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					long val = this->internArr->getBase()[offset];
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+			}
 			break;
 		}
 		case readInt32LE:
@@ -344,6 +549,45 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case readIntBE:
 		{
+			if (params->cArgs == 2)
+			{
+				int offset = params->rgvarg[0].intVal;
+				int bl = params->rgvarg[1].intVal;
+				if (this->safeAccess(offset, CUSTOM, bl))
+				{
+					long val = this->internArr->getBase()[offset];
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+				else
+				{
+					return E_FAIL;
+				}
+			}
+			else {
+				int offset = params->rgvarg[0].intVal;
+				int bl = params->rgvarg[1].intVal;
+				bool check = params->rgvarg[2].boolVal;
+				if (check)
+				{
+					if (this->safeAccess(offset, CUSTOM, bl))
+					{
+						long val = this->internArr->getBase()[offset];
+						result->vt = VT_I4;
+						result->lVal = val;
+					}
+					else
+					{
+						return E_FAIL;
+					}
+				}
+				else
+				{
+					long val = this->internArr->getBase()[offset];
+					result->vt = VT_I4;
+					result->lVal = val;
+				}
+			}
 			break;
 		}
 		case readIntLE:
@@ -356,14 +600,56 @@ HRESULT Buffer::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std:
 		}
 		case swap16:
 		{
+			if (sizeof(this->internArr->getBase()) % 2 != 0)
+			{
+				return E_FAIL;
+			} 
+			else
+			{
+				for (auto i = 0; i < sizeof(this->internArr->getBase()); i += 2) {
+					byte t = this->internArr->getBase()[i];
+					this->internArr->getBase()[i] = this->internArr->getBase()[i + 1];
+					this->internArr->getBase()[i + 1] = t;
+				}
+			}
 			break;
 		}
 		case swap32:
 		{
+			if (sizeof(this->internArr->getBase()) % 4 != 0)
+			{
+				return E_FAIL;
+			}
+			else
+			{
+				byte* temp = this->internArr->getBase();
+				for (auto i = 0; i < sizeof(temp); i += 4)
+				{
+					byte t1 = temp[i];
+					byte t2 = temp[i + 1];
+					temp[i] = temp[i + 3];
+					temp[i + 1] = temp[i + 2];
+					temp[i + 2] = t2;
+					temp[i + 3] = t1;
+				}
+			}
 			break;
 		}
 		case swap64:
 		{
+			byte* temp = this->internArr->getBase();
+			for (auto i = 0; i < sizeof(temp); i += 6)
+			{
+				byte t1 = temp[i];
+				byte t2 = temp[i + 1];
+				byte t3 = temp[i + 2];
+				temp[i] = temp[i + 5];
+				temp[i + 1] = temp[i + 4];
+				temp[i + 2] = temp[i + 3];
+				temp[i + 3] = t3;
+				temp[i + 4] = t2;
+				temp[i + 5] = t1;
+			}
 			break;
 		}
 		case toJSON:
