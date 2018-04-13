@@ -189,6 +189,7 @@ private:
 	};
 protected:
 	bool safeAccess(int offset, type type = INT32, int num = -1);
+	void _copy(std::unique_ptr<Buffer> target, long targetStart = 0, long sourceStart = 0, long sourceEnd = 0);
 public:
 	Buffer(bool safe = true, long numBytes = 0, byte fill[] = { 0x00 }) : BaseObject(methodMap) {
 		internArr = std::make_unique<TypedArray>(safe, numBytes, fill);
