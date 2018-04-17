@@ -42,7 +42,7 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 			{
 				if (events[name].size() < maxListeners)
 				{
-					events[name].push(std::make_unique<IDispatch>(disp));
+					events[name].push_back(std::make_unique<IDispatch>(disp));
 				}
 				else
 				{
@@ -52,12 +52,40 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 			}
 			else
 			{
-				events[name] = std::queue<std::unique_ptr<IDispatch>>();
-				events[name].push(std::make_unique<IDispatch>());
+				events[name] = std::vector<std::unique_ptr<IDispatch>>();
+				events[name].push_back(std::make_unique<IDispatch>());
 			}
 			return hr;
 		}
 		case emit: //need to think of a good way of handling this one
+		{
+			auto numArgs = params->cArgs;
+			std::wstring eventName(params->rgvarg[numArgs - 1].bstrVal, SysStringLen(params->rgvarg[numArgs - 1].bstrVal));
+			auto val = events.find(eventName);
+			if (val != events.end())
+			{
+				DISPPARAMS p;
+				for (unsigned int i = numArgs - 2, j = 0; i >= 0; i--, j++)
+				{
+					p.rgvarg[j] = params->rgvarg[i];
+				}
+				p.cArgs = numArgs - 1;
+				p.cNamedArgs = 0;
+				p.rgdispidNamedArgs = NULL;
+				auto vec = val->second;
+				for (auto i = vec.begin(); i != vec.end(); i++)
+				{
+					VARIANT vResult;
+					i->get()->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &p, &vResult, NULL, NULL);
+				}
+			}
+			else
+			{
+				return E_FAIL;
+			}
+			return hr;
+		}
+		case eventNames:
 		{
 			std::vector<std::wstring> names;
 			for (auto it = events.begin(); it != events.end(); ++it)
@@ -72,17 +100,13 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 			sf = SafeArrayCreate(VT_BSTR, 1, rgsabound);
 			BSTR HUGEP *pdFreq;
 			SafeArrayAccessData(sf, (void**)&pdFreq);
-			for (auto const& value: names)
+			for (auto const& value : names)
 			{
 				BSTR temp = SysAllocStringLen(value.data(), value.size());
 				*pdFreq++ = temp;
 			}
 			SafeArrayUnaccessData(sf);
 			result->parray = sf;
-			return hr;
-		}
-		case eventNames:
-		{
 			return hr;
 		}
 		case getMaxListeners:
@@ -112,6 +136,22 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 		}
 		case listeners:
 		{
+			auto temp = params->rgvarg[1].bstrVal;
+			std::wstring eventName(temp, SysStringLen(temp));
+			result->vt = VT_SAFEARRAY;
+			SAFEARRAY* sf;
+			SAFEARRAYBOUND rgsabound[1];
+			rgsabound[0].lLbound = 0;
+			rgsabound[0].cElements = events[eventName].size();
+			sf = SafeArrayCreate(VT_DISPATCH, 1, rgsabound);
+			IDispatch HUGEP *pdFreq;
+			SafeArrayAccessData(sf, (void**)&pdFreq);
+			for (auto const& value : events[eventName])
+			{
+				*pdFreq++ = *value.get();
+			}
+			SafeArrayUnaccessData(sf);
+			result->parray = sf;
 			return hr;
 		}
 		case on:
