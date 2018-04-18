@@ -1,11 +1,12 @@
 #include "BaseObject.h"
 #include <queue>
+#include <utility>
 
 class EventEmitter : public BaseObject {
 private:
 	long defaultMaxListeners = 10;
 	long maxListeners = -1;
-	std::map<std::wstring, std::vector<std::unique_ptr<IDispatch>>> events;
+	std::map<std::wstring, std::vector<std::pair<std::unique_ptr<IDispatch>, bool>>> events;
 
 	virtual HRESULT getMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
 	virtual HRESULT setMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;

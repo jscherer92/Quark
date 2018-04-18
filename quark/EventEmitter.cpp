@@ -42,18 +42,18 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 			{
 				if (events[name].size() < maxListeners)
 				{
-					events[name].push_back(std::make_unique<IDispatch>(disp));
+					events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), false));
 				}
 				else
 				{
 					//TODO: add in exception info
-					return S_FALSE;
+					return E_FAIL;
 				}
 			}
 			else
 			{
-				events[name] = std::vector<std::unique_ptr<IDispatch>>();
-				events[name].push_back(std::make_unique<IDispatch>());
+				events[name] = std::vector<std::pair<std::unique_ptr<IDispatch>, bool>>();
+				events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), false));
 			}
 			return hr;
 		}
@@ -73,14 +73,25 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 				p.cNamedArgs = 0;
 				p.rgdispidNamedArgs = NULL;
 				auto vec = val->second;
-				for (auto i = vec.begin(); i != vec.end(); i++)
+				auto release = std::vector<int>();
+				for (auto i = 0; i < vec.size(); i++)
 				{
 					VARIANT vResult;
-					i->get()->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &p, &vResult, NULL, NULL);
+					vec[i].first->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &p, &vResult, NULL, NULL);
+					if (vec[i].second)
+					{
+						release.push_back(i);
+					}
+				}
+				//finally, release all of the once listeners
+				for (auto i = release.size() - 1; i >= 0; i--)
+				{
+					vec.erase(vec.begin() + release[i]);
 				}
 			}
 			else
 			{
+				//TODO: add in exception info
 				return E_FAIL;
 			}
 			return hr;
@@ -148,7 +159,7 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 			SafeArrayAccessData(sf, (void**)&pdFreq);
 			for (auto const& value : events[eventName])
 			{
-				*pdFreq++ = *value.get();
+				*pdFreq++ = *value.first.get();
 			}
 			SafeArrayUnaccessData(sf);
 			result->parray = sf;
@@ -156,27 +167,127 @@ HRESULT EventEmitter::callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params
 		}
 		case on:
 		{
+			auto temp = params->rgvarg[1].bstrVal;
+			std::wstring name(temp, SysStringLen(temp));
+			auto disp = params->rgvarg[0].pdispVal;
+			auto val = events.find(name);
+			if (val != events.end()) //need to make private function on making sure we are in bounds
+			{
+				if (events[name].size() < maxListeners)
+				{
+					events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), false));
+				}
+				else
+				{
+					//TODO: add in exception info
+					return E_FAIL;
+				}
+			}
+			else
+			{
+				events[name] = std::vector<std::pair<std::unique_ptr<IDispatch>, bool>>();
+				events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), false));
+			}
 			return hr;
 		}
 		case once:
 		{
+			auto temp = params->rgvarg[1].bstrVal;
+			std::wstring name(temp, SysStringLen(temp));
+			auto disp = params->rgvarg[0].pdispVal;
+			auto val = events.find(name);
+			if (val != events.end()) //need to make private function on making sure we are in bounds
+			{
+				if (events[name].size() < maxListeners)
+				{
+					events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), true));
+				}
+				else
+				{
+					//TODO: add in exception info
+					return E_FAIL;
+				}
+			}
+			else
+			{
+				events[name] = std::vector<std::pair< std::unique_ptr<IDispatch>, bool>> ();
+				events[name].push_back(std::make_pair(std::make_unique<IDispatch>(disp), true));
+			}
 			return hr;
 		}
 		case prependListener:
 		{
+			auto temp = params->rgvarg[1].bstrVal;
+			std::wstring name(temp, SysStringLen(temp));
+			auto disp = params->rgvarg[0].pdispVal;
+			auto val = events.find(name);
+			if (val != events.end()) //need to make private function on making sure we are in bounds
+			{
+				if (events[name].size() < maxListeners)
+				{
+					events[name].insert(events[name].begin(), std::make_pair(std::make_unique<IDispatch>(disp), false));
+				}
+				else
+				{
+					//TODO: add in exception info
+					return E_FAIL;
+				}
+			}
+			else
+			{
+				events[name] = std::vector<std::pair< std::unique_ptr<IDispatch>, bool>>();
+				events[name].insert(events[name].begin(), std::make_pair(std::make_unique<IDispatch>(disp), false));
+			}
 			return hr;
 		}
 		case prependOnceListener:
 		{
+			auto temp = params->rgvarg[1].bstrVal;
+			std::wstring name(temp, SysStringLen(temp));
+			auto disp = params->rgvarg[0].pdispVal;
+			auto val = events.find(name);
+			if (val != events.end()) //need to make private function on making sure we are in bounds
+			{
+				if (events[name].size() < maxListeners)
+				{
+					events[name].insert(events[name].begin(), std::make_pair(std::make_unique<IDispatch>(disp), true));
+				}
+				else
+				{
+					//TODO: add in exception info
+					return E_FAIL;
+				}
+			}
+			else
+			{
+				events[name] = std::vector<std::pair< std::unique_ptr<IDispatch>, bool>>();
+				events[name].insert(events[name].begin(), std::make_pair(std::make_unique<IDispatch>(disp), true));
+			}
 			return hr;
 		}
 		case removeAllListeners:
 		{
+			auto numArgs = params->cArgs;
+			if (numArgs == 0) //delete all listeners
+			{
+				events.clear();
+			}
+			else
+			{
+				std::wstring eventName(params->rgvarg[0].bstrVal, SysStringLen(params->rgvarg[0].bstrVal));
+				auto val = events.find(eventName);
+				if (val != events.end())
+				{
+					events.erase(val);
+				}
+				result->pdispVal = this;
+				result->vt = VT_DISPATCH;
+			}
 			return hr;
 		}
-		case removeListener:
+		case removeListener: //will have to think about this one, but I don't think it is readily needed
 		{
-			return hr;
+			return E_NOTIMPL;
 		}
 		case setMaxListeners: //only handle the 0 case for infinity, not the infinite set case. Will look into later
 		{
