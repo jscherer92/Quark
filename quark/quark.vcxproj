@@ -124,6 +124,7 @@
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="webEventHandler.cpp" />
+    <ClCompile Include="WriteableStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Test.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="webEventHandler.h" />
+    <ClInclude Include="WriteableStream.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

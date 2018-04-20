@@ -48,6 +48,9 @@
     <ClCompile Include="EventEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WriteableStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EventEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteableStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

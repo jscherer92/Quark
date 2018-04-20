@@ -3,7 +3,7 @@
 #include <utility>
 
 class EventEmitter : public BaseObject {
-private:
+protected:
 	long defaultMaxListeners = 10;
 	long maxListeners = -1;
 	std::map<std::wstring, std::vector<std::pair<std::unique_ptr<IDispatch>, bool>>> events;
@@ -12,7 +12,7 @@ private:
 	virtual HRESULT setMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
 	//virtual HRESULT setReferenceMember(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) = 0;
 	virtual HRESULT createObject(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
-	virtual HRESULT callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg) override;
+	HRESULT callFunction(DISPID id, std::unique_ptr<DISPPARAMS> params, std::unique_ptr<VARIANT> result, std::unique_ptr<EXCEPINFO> exception, std::unique_ptr<UINT> errArg);
 
 	enum getMethods { defaultMaxListeners = 1 };
 
@@ -53,4 +53,8 @@ private:
 	};
 public:
 	EventEmitter() : BaseObject(methodMap) { }
+	EventEmitter(std::map<memberType, std::vector<std::wstring>>&& m) : BaseObject(methodMap)
+	{
+		BaseObject::addMethods(std::move(m));
+	}
 };

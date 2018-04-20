@@ -21,7 +21,20 @@ protected:
 	std::vector<std::wstring> mMems;
 	byte locs[4];
 	byte size[4];
-	const WORD allowedFlags = DISPATCH_METHOD | DISPATCH_PROPERTYGET | DISPATCH_PROPERTYPUT | DISPATCH_PROPERTYPUTREF | DISPATCH_CONSTRUCT;
+	const WORD allowedFlags = DISPATCH_METHOD | DISPATCH_PROPERTYGET | DISPATCH_PROPERTYPUT | DISPATCH_CONSTRUCT;
+
+	bool addMethods(std::map<memberType, std::vector<std::wstring>>&& m) {
+		auto it = 1, cumulator = 0;
+		for (auto&& el : m)
+		{
+			auto i = mMems.begin();
+			mMems.insert(i + size[it - 1], std::begin(el.second), std::end(el.second));
+			size[it - 1] += el.second.size();
+			cumulator += size[it - 1];
+			locs[it] = cumulator;
+			it++;
+		}
+	}
 public:
 	BaseObject(std::map<memberType, std::vector<std::wstring>>& mems)
 	{
@@ -31,6 +44,7 @@ public:
 			size[it - 1] = el.second.size();
 			mMems.insert(std::end(mMems), std::begin(el.second), std::end(el.second));
 			locs[it] = mMems.size() - 1;
+			it++;
 		}
 	}
 
@@ -42,6 +56,7 @@ public:
 			size[it - 1] = el.second.size();
 			mMems.insert(std::end(mMems), std::begin(el.second), std::end(el.second));
 			locs[it] = mMems.size() - 1;
+			it++;
 		}
 	};
 	// IUnkown
