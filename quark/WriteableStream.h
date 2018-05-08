@@ -1,3 +1,4 @@
+#include <ostream>
 #include "EventEmitter.h"
 #include "Buffer.h"
 
@@ -45,4 +46,9 @@ protected:
 	};
 public:
 	WriteableStream() : EventEmitter(methodMap) {}
+private:
+	void attachEvents();
+	std::ostream outStream;
+	std::vector<byte> ibuf;
+	bool corked = false;
 };
