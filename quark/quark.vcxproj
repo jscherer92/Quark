@@ -136,6 +136,7 @@
     <ClInclude Include="ChakraManager.h" />
     <ClInclude Include="Embed.h" />
     <ClInclude Include="EventEmitter.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="os.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="TestObject.h" />
