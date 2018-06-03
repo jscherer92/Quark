@@ -44,6 +44,9 @@ I wish to see these containers move to a lower level.
 #### Can I get involved?
 Of course! I definitely want any and all contributors to this project! I would advise that if you want to start building the OSX or Linux verison of this that we will need to discuss the overarching API that we will call since I do not have this planned out yet.
 
+#### How Can I get Updates? Is the Project Dead?
+No it is not dead and I will do my best to make sure it doesn't die (unless something else comes along that completely destroys this project). I will try to keep my Twitter alive (I am not the best at social medai, I am pretty sure some of my friends think I have died since I haven't posted on my social media for over a couple years). My bio has my twitter link, but here it is just in case https://twitter.com/JustinScherer7
+
 #### So what else?
 Honestly, I really want this to become something and I am willing to put in the time, but do realize that I have a full time job, along with another project that I am working on (an OS written Rust because why not). I will be splitting my time between the two, but I will make sure this stays updated. At least working on it once or twice a week.
 
