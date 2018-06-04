@@ -133,6 +133,7 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Browser.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="ByteType.h" />
     <ClInclude Include="ChakraManager.h" />
     <ClInclude Include="Embed.h" />
     <ClInclude Include="EventEmitter.h" />

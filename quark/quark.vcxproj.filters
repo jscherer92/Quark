@@ -92,5 +92,8 @@
     <ClInclude Include="Function.h">
       <Filter>Header Files\Share</Filter>
     </ClInclude>
+    <ClInclude Include="ByteType.h">
+      <Filter>Header Files\Share</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
