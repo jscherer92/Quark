@@ -95,5 +95,11 @@
     <ClInclude Include="ByteType.h">
       <Filter>Header Files\Share</Filter>
     </ClInclude>
+    <ClInclude Include="JVariant.h">
+      <Filter>Header Files\Share</Filter>
+    </ClInclude>
+    <ClInclude Include="JObject.h">
+      <Filter>Header Files\Share</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

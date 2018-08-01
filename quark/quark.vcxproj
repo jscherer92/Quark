@@ -138,6 +138,8 @@
     <ClInclude Include="Embed.h" />
     <ClInclude Include="EventEmitter.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="JObject.h" />
+    <ClInclude Include="JVariant.h" />
     <ClInclude Include="os.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="TestObject.h" />
