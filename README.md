@@ -3,8 +3,7 @@ Create Applications with browser technologies using the native engine in your OS
 
 ## What is This?
 After seeing this awesome project here on GitHub: https://github.com/pojala/electrino I decided to revitalize the project.
-Currently, the only code written is a simple starter for the Window's side of things. It creates a window, initializes the CharkCore, and p
-prints out a simple executed script that was created by us.
+Currently, the only code written is a simple starter for the Window's side of things. It creates a window, initializes the CharkCore, and prints out a simple executed script that was created by us.
 
 ## Goals
 I am hoping to make this a cross OS solution, similar to the APIs for NWjs: https://nwjs.io/ or Electron: https://electronjs.org/
