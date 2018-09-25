@@ -115,10 +115,8 @@
   <ItemGroup>
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="Browser.cpp" />
-    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="ChakraManager.cpp" />
     <ClCompile Include="Embed.cpp" />
-    <ClCompile Include="EventEmitter.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="quark.cpp" />
     <ClCompile Include="Test.cpp" />
@@ -132,11 +130,9 @@
   <ItemGroup>
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Browser.h" />
-    <ClInclude Include="Buffer.h" />
     <ClInclude Include="ByteType.h" />
     <ClInclude Include="ChakraManager.h" />
     <ClInclude Include="Embed.h" />
-    <ClInclude Include="EventEmitter.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="JObject.h" />
     <ClInclude Include="JVariant.h" />
