@@ -56,3 +56,10 @@ So what does this mean? I have decided to use a newer language called Crystal: h
 One area that this is going to sour the discussion, for now, is in the Window's development. At this point, I am going to halt the development for Windows and move over to MacOSX. Crystal still does not have all the pieces in place to make it work well in Windows and so I believe running in the Unix system will provide a better development experience. I will be following their development of the Window's branch and will start work once it is up and running.
 
 The current PoC code will live on, and I will make sure that it stays there, but I will be making this change.
+
+# Update Febuary 2019
+It has still been my goal to figure out the best solution to this problem that currently plagues the hybrid desktop application ecosystem. While some of my interests have moved onto other fields, I have still been studying up on the best way to build this application.
+
+As stated before, the PoC will live on if anyone wants to continue building out the necessary versions, but I do not believe this ground up approach is going to be the best use of time for anyone. This does showcase how to interface with the built-in explorer for Windows and how to execute C++/JavaScript code in a mixed environment. Building the necessary components has seemed quite a heavy workload.
+
+On the use of Crystal for developing this application, I have their Windows development to be slow. I then moved onto Nim to see if this would a usable system. Currently, I still feel they are to early to develop on even though I enjoyed working with their language. My next approach is going to be using something more widely used. I think utilizing Qt may be the best move forward and I will look into using this toolkit to keep moving forward.
