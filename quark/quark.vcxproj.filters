@@ -89,5 +89,8 @@
     <ClInclude Include="JObject.h">
       <Filter>Header Files\Share</Filter>
     </ClInclude>
+    <ClInclude Include="JClass.h">
+      <Filter>Header Files\Share</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

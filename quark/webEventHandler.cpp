@@ -1,5 +1,7 @@
 #include "webEventHandler.h"
 
+// this is where we are going to attach all of the methods the users are allowed to run
+
 BOOL WebEventHandler::AttachScriptHandler() {
 	HRESULT hr;
 	IDispatch *docDispatch;
@@ -25,6 +27,8 @@ BOOL WebEventHandler::AttachScriptHandler() {
 	BSTR objName = SysAllocString(L"os");
 	wndEx->GetDispID(objName, fdexNameEnsure, &dispid);
 	SysFreeString(objName);
+
+	// we will need to make sure that we add in everything that is available in a namespace. Do we add one at a time or all of them at the same time?
 	Os = new OpSys();
 	Os->AddRef();
 
