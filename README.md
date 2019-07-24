@@ -46,17 +46,6 @@ Honestly, I really want this to become something and I am willing to put in the 
 # Current Footprint
 Quark, with ChakraCore and a full IE11 browser is sitting at 9MB of RAM usage with the debugger attached and no object cleanup. It is also sitting at 198KB for an exe and 5 MB for the ChakraCore.dll of disk usage. I will do some more testing around it without Chakra or with V8. There will most likely be different configurations that will allow people to create very simple applications. More info on footprint coming in the near future!
 
-# Update for the Future
-So, after sometime of building the PoC in Windows and just generally getting my bearing on the C++11 and C++14 standard, I have decided to go in a different direction. This direction may alienate people from the project, but I do blieve that it will benefit the project in the long run.
-
-After working with a couple modern system languages, Rust and Go (yes, I do consider Go a systems language), I had first decided to use C++. It was something that I knew quite well, but I also knew many of the shortcomings of it. After studying what I had built, the Chromium browser, the V8 engine, Charka, etc. it made me realize how much I did not enjoy writing in C++. While the challenges I faced were fun, tackling them in something that I did not enjoy writing in lead me to not want to work on the project.
-
-So what does this mean? I have decided to use a newer language called Crystal: https://crystal-lang.org. I have had quite an enjoyable time with it and I do believe the syntax is way more inviting to write in than C++. On top of this, I do believe that it is going to a great language for systems programming and will further the development of this project quite well.
-
-One area that this is going to sour the discussion, for now, is in the Window's development. At this point, I am going to halt the development for Windows and move over to MacOSX. Crystal still does not have all the pieces in place to make it work well in Windows and so I believe running in the Unix system will provide a better development experience. I will be following their development of the Window's branch and will start work once it is up and running.
-
-The current PoC code will live on, and I will make sure that it stays there, but I will be making this change.
-
 # Update Febuary 2019
 It has still been my goal to figure out the best solution to this problem that currently plagues the hybrid desktop application ecosystem. While some of my interests have moved onto other fields, I have still been studying up on the best way to build this application.
 
@@ -70,3 +59,16 @@ Funny that I keep coming back to this project even after I think that I am done 
 There is only one piece of Poco that I am still debugging and that is the https server portion. I have been having some issues trying to get it to read the certificate that I hand it, but otherwise it is a great cross platform library that has really boosted some things that I was worried about doing for this project.
 
 So this leaves me to move forward with this. I will continue at a pace that I think is comfortable for me. Once the first interface between Windows and the shared piece is done, I think it will move much faster than it has. I am a little bit wary of OSX, mainly because I have done almost zero work there. But, once this is at a MVP level, I think I will move over to that portion.
+
+# Update July 2019
+It has been quite some time since I have touched the project. To be honest, I have been working on something else that will be coming out next year and it has eaten quite a bit of my time sadly. I always keep coming back to this project since my day job involves me working in web containers and it is always sad when I have to do memory profiling and the base container is 50MB.
+
+So, I have been revamping my personal schedule to help balance quite a few things in my life and one of them is spending time outside of this other project that I sadly can not talk about at this time. The next thing I will be looking at on the side is Vulkan. Some of you may be wondering, how does this relate to this project in any way? Well, there are a couple cool libraries that I think are going to help out in the development of this application.
+
+1) GLFW, window creation without all of the boilerplate code that I have in the current project.
+2) May be able to utilize Vulkan as a target instead of the web container (just a thought)
+3) It is going to help my C++ writing capabilities. I am still shaky on some concepts with C++ and I want to make sure that I am delivering something that is going to be both usable but also easy to contribute to.
+
+So, while this project will be slow going, I will also open up the other repository once I have learned more about Vulkan and have started to play with it more. That project should be up in the next month or two. Again, this is still not abandoned, it is more on hold while I am still trying to figure out how to both balance and build this project.
+
+Thanks!
