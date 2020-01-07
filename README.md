@@ -72,3 +72,19 @@ So, I have been revamping my personal schedule to help balance quite a few thing
 So, while this project will be slow going, I will also open up the other repository once I have learned more about Vulkan and have started to play with it more. That project should be up in the next month or two. Again, this is still not abandoned, it is more on hold while I am still trying to figure out how to both balance and build this project.
 
 Thanks!
+
+# Update January 2020
+Well, I know I have been getting comments on where the status is for this project and I know that I have stated that I was going to try to work on it. But, I was also overly optimistic with other projects and this one. My current main project is almost finished, but that also means that I will need to start working on some other pieces (mainly learning some new tech since my current main project has eaten up most of my free time for the past year).
+
+What is the status of all of this? Well, to be frank, there is not much progress. Microsoft has decided to go with the Chromium engine for their browser and that would hopefully mean that they will expose it as an API for the COM system. If not, well, we are going to have the same bloated interfaces that you get with NWJS or Electron sadly. 
+
+There are other ways around this and they may end up working better, but they are monumental lifts all in their own. The main ones I can think of off of the top of my head are:
+
+1) Implement a subset of the rendering system for HTML/CSS to be super lightweight. I know there are some projects our there such as:https://github.com/litehtml/litehtml that could achieve this. With this out of the way, it would putting a JavaScript engine with this. We could use V8, or we could use something lighter such as: https://github.com/jerryscript-project/jerryscript
+2) Do something like above, but utilize Vulkan/OpenGL to do the rendering
+
+I really don't know at the moment and these are all just ideas I have had while I have had downtime. Will I move forward with this project? I will probably wrap it up in a clean way so that writing C++ modules is a bit easier. But, after that, I think I will move onto my other projects for a bit and then potentially come back to this idea and implement, most likely, the first item.
+
+We will see in the coming year what I eventually decide to do, but I thought it would be best to say something now since I have not done any work for the past year.
+
+Thanks!
